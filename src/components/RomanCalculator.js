@@ -4,6 +4,23 @@ import '../styles/components/RomanCalculator.css';
 function RomanCalculator() {
 
     const [expression, setExpression] = useState('');
+    const [clear, setClear] = useState(false);
+    const [expressionFinal, setExpressionFinal] = useState('');
+    const [result, setResult] = useState();
+
+    function intToRoman(num) {
+        
+        var digits = String(+num).split(""),
+        key = ["","C","CC","CCC","CD","D","DC","DCC","DCCC","CM",
+        "","X","XX","XXX","XL","L","LX","LXX","LXXX","XC",
+        "","I","II","III","IV","V","VI","VII","VIII","IX"],
+        roman_num = "",
+        i = 3;
+
+        while (i--)
+            roman_num = (key[+digits.pop() + (i * 10)] || "") + roman_num;
+        return Array(+digits.join("") + 1).join("M") + roman_num;
+    }
 
     function char_to_int(c){
         switch (c){
@@ -37,23 +54,22 @@ function RomanCalculator() {
     }
 
     function calculation(expression){
-        var sum = 0;
+        var res = 0;
         for(var i = 0; i < expression.length; i = i+2){
             if(i > 1){
-                if(expression[i-1] === '+'){
-                    sum += romanToInt(expression[i]);
+                if(expression[i-1] === '+'){              
+                    res += romanToInt(expression[i]);
                 }else if(expression[i-1] === '-'){
-                    sum -= romanToInt(expression[i]);
+                    res -= romanToInt(expression[i]);
                 }else{
                     console.log("IMPOSSIVEL")
                 }
             }else{
-                sum += romanToInt(expression[i]);
+                res += romanToInt(expression[i]);
             }
-            
         }
 
-        return sum;
+        return res;
     }
 
     function getExpression(e){
@@ -63,24 +79,35 @@ function RomanCalculator() {
         let expres = expression.split(' ').join('');
         let numbers = expres.split(new RegExp('(['+ separators.join('') + '])'))
 
-        console.log(numbers);
+        setExpression(expres);
+        setClear(true);
 
         let res = calculation(numbers);
-        
-        console.log(res)
+        setResult(res);
     }
 
-    function handleChange(e) {
-        setExpression(e.target.value);
+    function HandleChange(e){
+        setExpression(e.target.value)
+        setClear(false)
     }
 
     return (
         <div className="container">
+            <h1>Roman Calculator</h1>
             <form onSubmit={getExpression}>
-                <h1>Roman Calculator</h1>
-                <input onChange={handleChange} type="text" />
+                <input onChange={HandleChange} type="text" />   
                 <button type="submit">Calcular</button>
             </form>
+
+            {
+                clear && (
+                    <div>
+                        <p>A resposta é: {result}</p>
+                        <p>{expression} = {intToRoman(result)}</p>
+                    </div>                 
+                ) 
+            }
+            
         </div>
     );
 }
