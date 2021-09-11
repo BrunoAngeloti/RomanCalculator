@@ -1,15 +1,18 @@
 import { useState } from 'react';
 import '../styles/components/RomanCalculator.css';
 
+import iconSend from '../assets/send.svg'
+
 function RomanCalculator() {
 
     const [expression, setExpression] = useState('');
-    const [clear, setClear] = useState(false);
-    const [expressionFinal, setExpressionFinal] = useState('');
+    const [clear, setClear] = useState(true);
     const [result, setResult] = useState();
+    const [messageError, setMessageError] = useState('');
+    const [error, setError] = useState(false);
 
+    // Função para converter um inteiro para algarismo romano
     function intToRoman(num) {
-        
         var digits = String(+num).split(""),
         key = ["","C","CC","CCC","CD","D","DC","DCC","DCCC","CM",
         "","X","XX","XXX","XL","L","LX","LXX","LXXX","XC",
@@ -22,6 +25,7 @@ function RomanCalculator() {
         return Array(+digits.join("") + 1).join("M") + roman_num;
     }
 
+    // Função para converter caracter para inteiro
     function char_to_int(c){
         switch (c){
             case 'I': return 1;
@@ -35,6 +39,7 @@ function RomanCalculator() {
         }
     }
 
+    // Função para converter um algarismo romano para inteiro
     function romanToInt(str1) {
         if(str1 == null) return -1;
         var num = char_to_int(str1.charAt(0));
@@ -43,6 +48,7 @@ function RomanCalculator() {
         for(var i = 1; i < str1.length; i++){
             curr = char_to_int(str1.charAt(i));
             pre = char_to_int(str1.charAt(i-1));
+            if(curr === -1 || pre === -1) return -1;
             if(curr <= pre){
                 num += curr;
             } else {
@@ -53,25 +59,44 @@ function RomanCalculator() {
         return num;
     }
 
+    // Função para calcular a expressão dada
     function calculation(expression){
         var res = 0;
+        var aux = 0;
         for(var i = 0; i < expression.length; i = i+2){
             if(i > 1){
-                if(expression[i-1] === '+'){              
-                    res += romanToInt(expression[i]);
-                }else if(expression[i-1] === '-'){
-                    res -= romanToInt(expression[i]);
+                if(expression[i-1] === '+' && expression[i] !== '+' && expression[i] !== '-'){      
+                    aux = romanToInt(expression[i].toUpperCase());
+                    res += aux;
+                }else if(expression[i-1] === '-' && expression[i] !== '+' && expression[i] !== '-'){
+                    aux = romanToInt(expression[i].toUpperCase());                
+                    res -= aux;
                 }else{
-                    console.log("IMPOSSIVEL")
+                    setMessageError("EXPRESSÃO INVALIDA");
+                    return;
                 }
             }else{
-                res += romanToInt(expression[i]);
+                aux = romanToInt(expression[i].toUpperCase());
+                res += aux;
             }
+            if(aux === -1){
+                setMessageError("EXPRESSÃO INVALIDA");
+                return;
+            }
+        }
+
+        if(res < 0){
+            setMessageError("NAO EXISTE ALGARISMOS NEGATIVOS");
+            return;
+        }else if(res === 0){
+            setMessageError("IMPOSSIVEL REPRESENTAÇÃO PARA ZERO");
+            return;
         }
 
         return res;
     }
 
+    // Função para pegar a expressão passada pelo input e transformar no padrão do código
     function getExpression(e){
         e.preventDefault();
 
@@ -80,30 +105,49 @@ function RomanCalculator() {
         let numbers = expres.split(new RegExp('(['+ separators.join('') + '])'))
 
         setExpression(expres);
-        setClear(true);
+        
 
         let res = calculation(numbers);
+        if(res == null){
+            setError(true);
+            return;
+        };
+        setClear(false);
         setResult(res);
     }
 
+    // Função para setar estados quando o input for alterado
     function HandleChange(e){
         setExpression(e.target.value)
-        setClear(false)
+        setClear(true)
+        setError(false)
     }
 
     return (
         <div className="container">
-            <h1>Roman Calculator</h1>
+            <h1>ROMAN CALCULATOR</h1>
             <form onSubmit={getExpression}>
-                <input onChange={HandleChange} type="text" />   
-                <button type="submit">Calcular</button>
+                <input required placeholder="insira a expressão..." onChange={HandleChange} type="text" />   
+                <button type="submit">
+                    <img src={iconSend} alt="Icone de enviar" />
+                </button>
             </form>
 
             {
-                clear && (
-                    <div>
-                        <p>A resposta é: {result}</p>
-                        <p>{expression} = {intToRoman(result)}</p>
+                !clear && (
+                    <div className="results">
+                        <h2>RESULT:</h2>
+                        <p>{result}</p>
+                        <h2>EXPRESSION:</h2>
+                        <p>{expression.toUpperCase()} = {intToRoman(result)}</p>                                
+                    </div>                 
+                ) 
+            }
+
+            {
+                error && (
+                    <div className="error">
+                        <h2>{messageError}</h2>                              
                     </div>                 
                 ) 
             }
