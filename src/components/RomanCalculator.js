@@ -99,15 +99,18 @@ function RomanCalculator() {
     // Função para pegar a expressão passada pelo input e transformar no padrão do código
     function getExpression(e){
         e.preventDefault();
-
         let separators = ["+", '-'];
+
+        //Elimina todos os possíveis espaços
         let expres = expression.split(' ').join('');
+
+        //Faz um split da expressão pelo + ou -
         let numbers = expres.split(new RegExp('(['+ separators.join('') + '])'))
 
         setExpression(expres);
-        
-
         let res = calculation(numbers);
+
+        //Caso seja NULL existe algum erro
         if(res == null){
             setError(true);
             return;
@@ -151,7 +154,6 @@ function RomanCalculator() {
                     </div>                 
                 ) 
             }
-            
         </div>
     );
 }
