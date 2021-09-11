@@ -130,12 +130,6 @@ function RomanCalculator() {
     }
 
     function ClickInfo(){
-        Swal.fire(
-            'Entre com uma expressão válida, por exemplo: X+L+C',
-            'Esta calculadora só faz somas e subtrações',
-            'Lembrando que os algarismos romanos são:',
-            'I - 1, V - 5, X - 10, L - 50, C - 100,  D - 500, M - 1000'
-        )
         Swal.fire({
             title: '<strong>DICAS</strong>',
             icon: 'info',
