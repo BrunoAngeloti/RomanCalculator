@@ -2,6 +2,9 @@ import { useState } from 'react';
 import '../styles/components/RomanCalculator.css';
 
 import iconSend from '../assets/send.svg'
+import info from '../assets/info.svg'
+
+import Swal from 'sweetalert2'
 
 function RomanCalculator() {
 
@@ -126,9 +129,29 @@ function RomanCalculator() {
         setError(false)
     }
 
+    function ClickInfo(){
+        Swal.fire(
+            'Entre com uma expressão válida, por exemplo: X+L+C',
+            'Esta calculadora só faz somas e subtrações',
+            'Lembrando que os algarismos romanos são:',
+            'I - 1, V - 5, X - 10, L - 50, C - 100,  D - 500, M - 1000'
+        )
+        Swal.fire({
+            title: '<strong>DICAS</strong>',
+            icon: 'info',
+            html:
+              'Entre com uma expressão válida, por exemplo:</br><strong>X+L+C</strong></br></br>' +
+              'Esta calculadora só faz <strong>somas</strong> e <strong>subtrações</strong>.</br>'
+          })
+    }
+
     return (
         <div className="container">
-            <h1>ROMAN CALCULATOR</h1>
+            <div className="title">
+                <h1>ROMAN CALCULATOR</h1>
+                <img onClick={ClickInfo} className="iconInfo" src={info} alt="detalhes" />
+            </div>
+            
             <form onSubmit={getExpression}>
                 <input required placeholder="insira a expressão..." onChange={HandleChange} type="text" />   
                 <button type="submit">

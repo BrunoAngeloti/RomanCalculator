@@ -4,12 +4,25 @@
     justify-content:center;
     background-color: var(--Blue-Light);
     border-radius: 15px;
-    padding: 50px 15px;
+    padding: 40px 15px;
     width: 450px;
     z-index: 1;
     box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.25);
 
     flex-direction: column;
+}
+
+.iconInfo{
+    width: 24px;
+    margin-left: 15px;
+    cursor: pointer;
+}
+
+.title{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin:0;
 }
 
 .container h1{
@@ -124,13 +137,13 @@
     }
 }
 
-@media (max-width: 430px){
+@media (max-width: 461px){
     .container h1{
         font-size: 2rem;     
     }
 }
 
-@media (max-width: 360px){
+@media (max-width: 380px){
     .container h1{
         font-size: 1.5rem;     
     }
